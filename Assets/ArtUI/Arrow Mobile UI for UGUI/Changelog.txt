@@ -1,0 +1,13 @@
+Version 1.3:
+- Updated scripts for Unity 2019.
+
+Version 1.2:
+- All scripts are under DuloGames namespace now.
+- Updated scripts to prevent some warning messages.
+- Added Sprite Atlases.
+
+Version 1.1:
+- Update for Unity 2017.
+
+Version 1.0:
+- Initial release.
