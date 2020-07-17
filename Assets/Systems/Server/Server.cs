@@ -6,6 +6,8 @@ namespace SMBQ.Server
 {
     public static class Server
     {
+        
+        
         public static Battle Battle = new Battle();
     }
 }

@@ -75,13 +75,6 @@ public class Battle : MonoBehaviourPunCallbacks
 	    SetData();
         battleCardGroup.Set();
 
-        gameSystem.Init(state);
-        inputSystem.Init(state);
-        enemySystem.Init(state);
-        heroSystem.Init(state);
-        manaSystem.Init(state);
-        unitSystem.Init(state);
-        projectileSystem.Init(state);
 
 		if(battleType != BattleType.LivePvP && battleType != BattleType.LiveRaid)
 		{
