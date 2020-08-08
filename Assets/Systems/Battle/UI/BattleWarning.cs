@@ -2,28 +2,40 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleWarning
+namespace SMBQ.Battle
 {
-    //WARNINGS
-    public static void Display(BattleWarningType warningType)
+    public enum BattleWarningType
     {
-        switch (warningType)
+        NotEnoughMana,
+        NoCardSelected,
+        HeroOnCooldown,
+        AbilityOnCooldown,
+        HeroAlreadyCasting
+    }
+    
+    public class BattleWarning
+    {
+        //WARNINGS
+        public static void Display(BattleWarningType warningType)
         {
-            case BattleWarningType.NotEnoughMana:
-                Warning.Display("Not Enough Mana");
-                break;
-            case BattleWarningType.NoCardSelected:
-                Warning.Display("No Card Selected");
-                break;
-            case BattleWarningType.HeroOnCooldown:
-                Warning.Display("Hero is on Cooldown");
-                break;
-            case BattleWarningType.AbilityOnCooldown:
-                Warning.Display("Hero's Ability is on Cooldown");
-                break;
-            case BattleWarningType.HeroAlreadyCasting:
-                Warning.Display("Hero is Casting another Ability");
-                break;
+            switch (warningType)
+            {
+                case BattleWarningType.NotEnoughMana:
+                    Warning.Display("Not Enough Mana");
+                    break;
+                case BattleWarningType.NoCardSelected:
+                    Warning.Display("No Card Selected");
+                    break;
+                case BattleWarningType.HeroOnCooldown:
+                    Warning.Display("Hero is on Cooldown");
+                    break;
+                case BattleWarningType.AbilityOnCooldown:
+                    Warning.Display("Hero's Ability is on Cooldown");
+                    break;
+                case BattleWarningType.HeroAlreadyCasting:
+                    Warning.Display("Hero is Casting another Ability");
+                    break;
+            }
         }
     }
 }

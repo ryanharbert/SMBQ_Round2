@@ -8,17 +8,26 @@ namespace SMBQ.Data
 {
     public class AsyncPvPBattle
     {
+        private const string AsyncBattleCompleteFunctionName = "endPvPFightv3";
+        
         private Action asyncRewardDisplay;
 
         public void AsyncBattleComplete(string opponent, bool win, Action rewardDisplay)
         {
-            asyncRewardDisplay = rewardDisplay;
-            PlayFabCloudScriptAPI.ExecuteEntityCloudScript(
-                new PlayFab.CloudScriptModels.ExecuteEntityCloudScriptRequest()
-                {
-                    Entity = Data.instance.entityKey, FunctionName = "endPvPFightv3", GeneratePlayStreamEvent = true,
-                    FunctionParameter = new {opponent = opponent, win = win}
-                }, PvPAsyncRewards, PvPAsnycFailure);
+            if (Data.Instance.offline)
+            {
+                Reward(10, 10, 1);
+            }
+            else
+            {
+                asyncRewardDisplay = rewardDisplay;
+                PlayFabCloudScriptAPI.ExecuteEntityCloudScript(
+                    new PlayFab.CloudScriptModels.ExecuteEntityCloudScriptRequest()
+                    {
+                        Entity = Data.Instance.entityKey, FunctionName = AsyncBattleCompleteFunctionName, GeneratePlayStreamEvent = true,
+                        FunctionParameter = new {opponent = opponent, win = win}
+                    }, PvPAsyncRewards, AsyncBattleCompleteFailure);
+            }
         }
 
         private void PvPAsyncRewards(PlayFab.CloudScriptModels.ExecuteCloudScriptResult result)
@@ -47,18 +56,24 @@ namespace SMBQ.Data
                 {
                     win = false;
                 }
-
-                Data.instance.currency.asyncPoints += points;
-                Data.instance.currency.gold += gold;
-
-                //battleEnd.AsyncPvp(win, points, gold, rank);
-                asyncRewardDisplay.Invoke();
+                
+                Reward(points, gold, rank);
             }
         }
 
-        private void PvPAsnycFailure(PlayFabError error)
+        void Reward(int points, int gold, int rank)
         {
-            Debug.LogError("PvPAsnycFailure");
+
+            Data.Instance.Currency.asyncPoints += points;
+            Data.Instance.Currency.gold += gold;
+
+            //battleEnd.AsyncPvp(win, points, gold, rank);
+            asyncRewardDisplay.Invoke();
+        }
+
+        private void AsyncBattleCompleteFailure(PlayFabError error)
+        {
+            Debug.LogError("AsyncBattleComplete FAILURE");
             Debug.LogError("Here's some debug information:");
             Debug.LogError(error.GenerateErrorReport());
         }

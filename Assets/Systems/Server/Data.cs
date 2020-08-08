@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using PlayFab;
 using PlayFab.ClientModels;
 using PlayFab.Json;
@@ -8,9 +9,25 @@ namespace SMBQ.Data
 {
     public class Data : MonoBehaviour
     {
-        public static Data instance;
+        private static Data _instance;
+
+        public static Data Instance
+        {
+            get
+            {
+                if (!_instance)
+                {
+                    GameObject g = new GameObject();
+                    
+                    _instance = g.AddComponent<Data>();
+                }
+                return _instance;
+            }
+        }
+
+        public bool offline = true;
         
-        public string displayName { get; internal set; }
+        public string DisplayName { get; internal set; }
         
         internal string playfabID;
         internal string entityID;
@@ -18,13 +35,15 @@ namespace SMBQ.Data
 
         internal PlayFab.CloudScriptModels.EntityKey entityKey;
 
-        public Battle battle = new Battle();
+        public readonly BattleDataManager Battle = new BattleDataManager();
         
-        internal Currency currency = new Currency();
+        public readonly CurrencyDataManager Currency = new CurrencyDataManager();
+
+        private bool set = false;
 
         private void Awake()
         {
-            instance = this;
+            _instance = this;
         }
 
         public void Login(Action loginComplete)
@@ -34,6 +53,14 @@ namespace SMBQ.Data
             entityKey = new PlayFab.CloudScriptModels.EntityKey() { Id = entityID, Type = entityType };
             
             loginComplete.Invoke();
+            set = true;
+        }
+
+        private void Update()
+        {
+            if (!set) return;
+            
+            Currency.Update();
         }
     }
 }
